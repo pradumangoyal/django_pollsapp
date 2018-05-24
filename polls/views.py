@@ -4,8 +4,8 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
-
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Question, Choice
 
@@ -24,7 +24,9 @@ def detail(request, questionid):
     template = loader.get_template('polls/detail.html') 
     return HttpResponse(template.render({'question': question, 'choice': choice}, request))
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView): 
+    login_url='../../accounts/login'
+    redirect_field_name = 'next'
     model = Question
     template_name = 'polls/detail.html'
     def get_queryset(self):
@@ -39,8 +41,10 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/result.html'
 
-
+@login_required(login_url='../../../accounts/login/')
 def vote(request, question_id):
+    if request.user.is_authenticated:
+        pass
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])

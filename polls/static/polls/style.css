@@ -1,6 +1,8 @@
 body {
-    background: red;
+    background: white;
 }
 li a {
-    color: green;
+    font-family: sans-serif;
+    font-size: 30px;
+    color: grey;
 }
